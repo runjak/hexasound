@@ -1,6 +1,7 @@
 import React, { FC, useCallback } from 'react';
 
 import { createContext, waves, createFrequencyNode, WaveName, } from './audio';
+import WaveChart from './WaveChart';
 
 const App: FC = () => {
   const playWave = useCallback((waveName: WaveName) => {
@@ -17,6 +18,8 @@ const App: FC = () => {
       {Object.keys(waves).map((waveName) => (
         <button key={'play-' + waveName} onClick={() => playWave(waveName as WaveName)}>{waveName}</button>
       ))}
+      <br />
+      <WaveChart />
     </div>
   );
 }
