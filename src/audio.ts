@@ -8,16 +8,35 @@ export type Wave = (radians: number) => number;
 
 const sin: Wave = Math.sin;
 
-const abs: Wave = Math.abs;
+const square: Wave = (radians) => {
+  const piCount = Math.floor(radians / Math.PI);
 
-const hex: Wave = (radians: number): number => {
-  const alpha = radians / (Math.PI * 2);
-  const sign = alpha > Math.PI ? -1 : 1;
-
-  return sign;
+  return piCount % 2 === 0 ? 1 : -1;
 };
 
-export const waves = { sin, abs, hex };
+const sawtooth: Wave = (radians) => {
+  const piCount = Math.floor(radians / Math.PI);
+  const offset = piCount * Math.PI;
+
+  return ((radians - offset) / Math.PI * 2) - 1;
+}
+
+const triangle: Wave = (radians) => {
+  const piCount = Math.floor(radians / Math.PI);
+  const offset = piCount * Math.PI;
+  const delta = (radians - offset) / (Math.PI / 2);
+  const abs = (delta > 1) ? (1 - (delta - 1)) : delta;
+
+  return abs * square(radians);
+};
+
+const hex: Wave = (radians) => {
+  const t = 1.5 * triangle(radians);
+
+  return Math.min(1, Math.max(t, -1));
+};
+
+export const waves = { sin, square, sawtooth, triangle, hex };
 
 export type WaveName = keyof typeof waves;
 

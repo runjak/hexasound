@@ -5,7 +5,7 @@ import { waves, Wave } from './audio';
 const chartWave = (wave: Wave): string => {
   const size = '200x125'
   const color = '76A4FB'
-  const delta = Math.PI / 10;
+  const delta = Math.PI / 40;
   const iMax = Math.PI * 2;
 
   const data = [];
