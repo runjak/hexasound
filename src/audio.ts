@@ -1,6 +1,18 @@
 const AudioContext = window.AudioContext;
 
-export const createContext = () => new AudioContext();
+const memo = <T extends unknown>(f: (() => T)): (() => T) => {
+  let x: undefined | T = undefined;
+
+  return (): T => {
+    if (x === undefined) {
+      x = f();
+    }
+
+    return x;
+  };
+};
+
+export const createContext = memo(() => new AudioContext());
 
 const bufferSize = 4096;
 
