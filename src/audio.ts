@@ -69,3 +69,14 @@ export const createFrequencyNode = (context: AudioContext, wave: Wave, frequency
 
   return scriptNode;
 };
+
+export const createMicStream = async () => {
+  const audioContext = createContext();
+  const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+  return audioContext.createMediaStreamSource(audioStream);
+};
+
+export const createMicAnalyser = memo(() => {
+  const audioContext = createContext();
+});

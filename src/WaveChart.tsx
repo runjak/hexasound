@@ -7,10 +7,11 @@ const chartWave = (wave: Wave): string => {
   const color = '76A4FB'
   const delta = Math.PI / 40;
   const iMax = Math.PI * 2;
+  const yScale = 49;
 
   const data = [];
   for (let i = 0; i <= iMax; i += delta) {
-    data.push(wave(i) * 50 + 50);
+    data.push(wave(i) * yScale + yScale);
   }
 
   return `https://chart.googleapis.com/chart?cht=lc&chs=${size}&chco=${color}&chd=t:${data.join(',')}`;
