@@ -1,11 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { FC, useCallback } from 'react';
 
-import { createSinusNode, createContext } from './audio';
+import { createContext, waves, createFrequencyNode, WaveName, } from './audio';
 
-const App = () => {
-  const onClick = useCallback(() => {
+const App: FC = () => {
+  const playWave = useCallback((waveName: WaveName) => {
     const audioContext = createContext();
-    const a = createSinusNode(audioContext, 440, 0.1);
+    const a = createFrequencyNode(audioContext, waves[waveName], 440, 0.1);
 
     a.connect(audioContext.destination);
 
@@ -14,9 +14,9 @@ const App = () => {
 
   return (
     <div>
-      <button onClick={onClick}>
-        Zebra!
-      </button>
+      {Object.keys(waves).map((waveName) => (
+        <button key={'play-' + waveName} onClick={() => playWave(waveName as WaveName)}>{waveName}</button>
+      ))}
     </div>
   );
 }
