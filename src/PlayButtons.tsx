@@ -1,10 +1,10 @@
 import React, { FC, useCallback } from 'react';
 
-import { createContext, waves, createFrequencyNode, WaveName, } from './audio';
+import { createAudioContext, waves, createFrequencyNode, WaveName, } from './audio';
 
 const PlayButtons: FC = () => {
   const playWave = useCallback((waveName: WaveName) => {
-    const audioContext = createContext();
+    const audioContext = createAudioContext();
     const a = createFrequencyNode(audioContext, waves[waveName], 440, 0.1);
 
     a.connect(audioContext.destination);

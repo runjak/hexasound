@@ -12,7 +12,7 @@ const memo = <T extends unknown>(f: (() => T)): (() => T) => {
   };
 };
 
-export const createContext = memo(() => new AudioContext());
+export const createAudioContext = memo(() => new AudioContext());
 
 const bufferSize = 4096;
 
@@ -71,12 +71,28 @@ export const createFrequencyNode = (context: AudioContext, wave: Wave, frequency
 };
 
 export const createMicStream = async () => {
-  const audioContext = createContext();
+  const audioContext = createAudioContext();
   const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
   return audioContext.createMediaStreamSource(audioStream);
 };
 
+export const createBestagonStream = memo(() => {
+  const selector = '#bestagons';
+  const audioContext = createAudioContext();
+  const element = document.querySelector(selector);
+
+  if (!element) {
+    throw new Error(`Could not find element for selector '${selector}'!`);
+  }
+
+  if (!(element instanceof HTMLMediaElement)) {
+    throw new Error(`Element for selector '${selector}' is not an HTMLMediaElement!`);
+  }
+
+  return audioContext.createMediaElementSource(element);
+});
+
 export const createMicAnalyser = memo(() => {
-  const audioContext = createContext();
+  const audioContext = createAudioContext();
 });
