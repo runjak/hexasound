@@ -4,6 +4,7 @@ import { createAudioContext, createBestagonStream } from './audio';
 
 import PlayButtons from './PlayButtons';
 import WaveChart from './WaveChart';
+import WaveformGraph from './WaveformGraph';
 
 const App: FC = () => {
   const [analyser, setAnalyser] = useState<null | AnalyserNode>(null);
@@ -12,7 +13,7 @@ const App: FC = () => {
     const audioContext = createAudioContext();
 
     const analyserNode = audioContext.createAnalyser()
-    analyserNode.fftSize = 256;
+    analyserNode.fftSize = 1024;
 
     const source = createBestagonStream();
     source.connect(analyserNode);
@@ -29,7 +30,7 @@ const App: FC = () => {
       <br />
       <h1>bestagons.wav</h1>
       <audio controls src="./bestagons.wav" id="bestagons" />
-      {(analyser !== null) ? (<FrequencyGraph analyser={analyser} />) : (<button onClick={onClick}>Do a thing!</button>)}
+      {(analyser !== null) ? (<><FrequencyGraph analyser={analyser} /><WaveformGraph analyser={analyser}></WaveformGraph></>) : (<button onClick={onClick}>Do a thing!</button>)}
     </div>
   );
 }

@@ -5,14 +5,14 @@ type Props = { analyser: AnalyserNode };
 const width = 800;
 const height = 100;
 
-const FrequencyGraph: FC<Props> = ({ analyser }) => {
+const WaveformGraph: FC<Props> = ({ analyser }) => {
   const [canvas, setCanvas] = useState<null | HTMLCanvasElement>(null);
 
   useEffect(() => {
     if (canvas === null) { return; }
 
     const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Float32Array(bufferLength);
+    const dataArray = new Uint8Array(bufferLength);
 
     const canvasCtx = canvas.getContext('2d');
     if (canvasCtx === null) { return; }
@@ -25,17 +25,28 @@ const FrequencyGraph: FC<Props> = ({ analyser }) => {
 
       canvasCtx.fillStyle = 'rgb(0, 0, 0)';
       canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+      canvasCtx.lineWidth = 2;
+      canvasCtx.strokeStyle = 'rgb(200, 200, 200)';
+      canvasCtx.beginPath();
 
-      analyser.getFloatFrequencyData(dataArray);
+      analyser.getByteTimeDomainData(dataArray);
 
-      const barWidth = (canvas.width / dataArray.length);
-      let posX = 0;
+      let sliceWidth = canvas.width * 0.1 / bufferLength;
+      let x = 0;
       for (let i = 0; i < bufferLength; i++) {
-        const barHeight = (dataArray[i] + 140) * 2;
-        canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight + 100) + ', 50, 50)';
-        canvasCtx.fillRect(posX, canvas.height - barHeight / 2, barWidth, barHeight / 2);
-        posX += barWidth + 1;
+        let v = dataArray[i] / 128.0;
+        let y = v * canvas.height / 2;
+
+        if (i === 0) {
+          canvasCtx.moveTo(x, y);
+        } else {
+          canvasCtx.lineTo(x, y);
+        }
+
+        x += sliceWidth;
       }
+      canvasCtx.lineTo(canvas.width, canvas.height / 2);
+      canvasCtx.stroke();
     };
     draw();
 
@@ -47,4 +58,4 @@ const FrequencyGraph: FC<Props> = ({ analyser }) => {
   );
 };
 
-export default FrequencyGraph;
+export default WaveformGraph;
