@@ -34,12 +34,7 @@ const sawtooth: Wave = (radians) => {
 }
 
 const triangle: Wave = (radians) => {
-  const piCount = Math.floor(radians / Math.PI);
-  const offset = piCount * Math.PI;
-  const delta = (radians - offset) / (Math.PI / 2);
-  const abs = (delta > 1) ? (1 - (delta - 1)) : delta;
-
-  return abs * square(radians);
+  return Math.asin(Math.sin(radians)) / (Math.PI / 2);
 };
 
 const hex: Wave = (radians) => {
@@ -91,8 +86,4 @@ export const createBestagonStream = memo(() => {
   }
 
   return audioContext.createMediaElementSource(element);
-});
-
-export const createMicAnalyser = memo(() => {
-  const audioContext = createAudioContext();
 });
