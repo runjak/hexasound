@@ -20,23 +20,15 @@ export type Wave = (radians: number) => number;
 
 const sin: Wave = Math.sin;
 
-const square: Wave = (radians) => {
-  return Math.sign(Math.sin(radians));
-};
+const square: Wave = (radians) => Math.sign(Math.sin(radians))
 
-const sawtooth: Wave = (radians) => {
-  return ((radians % Math.PI) / Math.PI * 2) - 1;
-}
+const sawtooth: Wave = (radians) => ((radians % Math.PI) / Math.PI * 2) - 1;
 
-const triangle: Wave = (radians) => {
-  return Math.asin(Math.sin(radians)) / (Math.PI / 2);
-};
+const triangle_: Wave = radians => Math.asin(Math.sin(radians));
 
-const hex: Wave = (radians) => {
-  const t = 1.5 * triangle(radians);
+const triangle: Wave = (radians) => triangle_(radians) / (Math.PI / 2);
 
-  return Math.min(1, Math.max(t, -1));
-};
+const hex: Wave = (radians) => Math.min(1, Math.max(triangle_(radians), -1));
 
 export const waves = { sin, square, sawtooth, triangle, hex };
 
