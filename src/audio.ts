@@ -21,9 +21,7 @@ export type Wave = (radians: number) => number;
 const sin: Wave = Math.sin;
 
 const square: Wave = (radians) => {
-  const piCount = Math.floor(radians / Math.PI);
-
-  return piCount % 2 === 0 ? 1 : -1;
+  return Math.sign(Math.sin(radians));
 };
 
 const sawtooth: Wave = (radians) => {
