@@ -11,6 +11,9 @@ const FrequencyGraph: FC<Props> = ({ analyser }) => {
   useEffect(() => {
     if (canvas === null) { return; }
 
+    canvas.width = width;
+    canvas.height = height;
+
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Float32Array(bufferLength);
 
