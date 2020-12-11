@@ -25,10 +25,7 @@ const square: Wave = (radians) => {
 };
 
 const sawtooth: Wave = (radians) => {
-  const piCount = Math.floor(radians / Math.PI);
-  const offset = piCount * Math.PI;
-
-  return ((radians - offset) / Math.PI * 2) - 1;
+  return ((radians % Math.PI) / Math.PI * 2) - 1;
 }
 
 const triangle: Wave = (radians) => {
