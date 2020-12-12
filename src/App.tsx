@@ -1,10 +1,11 @@
 import React, { FC, useCallback, useState } from 'react';
 import FrequencyGraph from './FrequencyGraph';
-import { createAudioContext, createBestagonStream } from './audio';
+import { createAudioContext, createBestagonStream, fooCurve } from './audio';
 
 import WaveChart from './WaveChart';
 import WaveformGraph from './WaveformGraph';
 import WaveComparison from './WaveComparison';
+import Series from './Series';
 
 const App: FC = () => {
   const [analyser, setAnalyser] = useState<null | AnalyserNode>(null);
@@ -32,6 +33,8 @@ const App: FC = () => {
         <WaveChart waveName="triangle" />
         <WaveChart waveName="hex" />
       </div>
+      <h2>ShapeCurve</h2>
+      <Series width={200} height={200} data={fooCurve} />
       <h2>Comparison A440</h2>
       <WaveComparison frequencies={[440]}/>
       <h2>Comparison D294</h2>

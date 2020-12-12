@@ -27,14 +27,14 @@ const Series: FC<Props> = ({ width, height, data, onClick }) => {
     ctx.strokeStyle = 'rgb(200, 200, 200)';
 
     const unit = Math.round(height / 2) - (2 * yMargin + 1);
-    const sliceWidth = width / data.length;
+    const sliceWidth = width / (data.length - 1);
     let x = 0;
     for (let i = 0; i < data.length; i++) {
       let y = data[i] * unit + unit + (2 * yMargin);
 
       if (i === 0) {
-        ctx.moveTo(0, y);
         ctx.beginPath();
+        ctx.moveTo(x, y);
       } else {
         ctx.lineTo(x, y);
       }
@@ -42,7 +42,6 @@ const Series: FC<Props> = ({ width, height, data, onClick }) => {
       x += sliceWidth;
     }
 
-    ctx.lineTo(width, unit);
     ctx.stroke();
 
   }, [canvas, width, height, data]);

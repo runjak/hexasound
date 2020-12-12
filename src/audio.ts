@@ -75,6 +75,27 @@ export const createTakeSampleNode = (context: AudioContext, take: (data: Array<n
   return scriptNode;
 };
 
+export const fooCurve: Array<number> = (() => {
+  const curve: Array<number> = [];
+  const f = (x: number) => Math.max(-1, Math.min(1, Math.asin(x)));
+  const delta = 0.1;
+
+  for (let x = -1 + delta; x < 0; x += delta) { curve.push(f(x)); }
+  curve.push(f(0));
+  for (let x = delta; x < 1; x += delta) { curve.push(f(x)) }
+
+  return curve;
+})();
+
+console.log({ fooCurve });
+
+export const createFooNode = (context: AudioContext): WaveShaperNode => {
+  const shaperNode = context.createWaveShaper();
+  shaperNode.curve = Float32Array.from(fooCurve);
+
+  return shaperNode;
+};
+
 export const createMicStream = async () => {
   const audioContext = createAudioContext();
   const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
