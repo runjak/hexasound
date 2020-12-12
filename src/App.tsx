@@ -4,6 +4,7 @@ import { createAudioContext, createBestagonStream } from './audio';
 
 import WaveChart from './WaveChart';
 import WaveformGraph from './WaveformGraph';
+import WaveComparison from './WaveComparison';
 
 const App: FC = () => {
   const [analyser, setAnalyser] = useState<null | AnalyserNode>(null);
@@ -31,6 +32,8 @@ const App: FC = () => {
         <WaveChart waveName="triangle" />
         <WaveChart waveName="hex" />
       </div>
+      <h2>Comparison 1</h2>
+      <WaveComparison />
       <h2>bestagons.wav</h2>
       <audio controls src="./bestagons.wav" id="bestagons" />
       {(analyser !== null) ? (<><FrequencyGraph analyser={analyser} /><WaveformGraph analyser={analyser}></WaveformGraph></>) : (<button onClick={onClick}>Do a thing!</button>)}
