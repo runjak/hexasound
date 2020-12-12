@@ -6,23 +6,9 @@ import WaveChart from './WaveChart';
 import WaveformGraph from './WaveformGraph';
 import WaveComparison from './WaveComparison';
 import Series from './Series';
+import BestagonComparison from './BestagonComparison';
 
 const App: FC = () => {
-  const [analyser, setAnalyser] = useState<null | AnalyserNode>(null);
-
-  const onClick = useCallback(() => {
-    const audioContext = createAudioContext();
-
-    const analyserNode = audioContext.createAnalyser()
-    analyserNode.fftSize = 1024;
-
-    const source = createBestagonStream();
-    source.connect(analyserNode);
-    analyserNode.connect(audioContext.destination);
-
-    setAnalyser(analyserNode);
-  }, [setAnalyser]);
-
   return (
     <div>
       <h1>Bestagons</h1>
@@ -43,7 +29,7 @@ const App: FC = () => {
       <WaveComparison frequencies={[294, 440]}/>
       <h2>bestagons.wav</h2>
       <audio controls src="./bestagons.wav" id="bestagons" />
-      {(analyser !== null) ? (<><FrequencyGraph analyser={analyser} /><WaveformGraph analyser={analyser}></WaveformGraph></>) : (<button onClick={onClick}>Do a thing!</button>)}
+      <BestagonComparison />
     </div>
   );
 }
