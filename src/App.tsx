@@ -23,13 +23,15 @@ const App: FC = () => {
 
   return (
     <div>
-      <WaveChart waveName="sin" />
-      <WaveChart waveName="square" />
-      <WaveChart waveName="sawtooth" />
-      <WaveChart waveName="triangle" />
-      <WaveChart waveName="hex" />
-      <br />
-      <h1>bestagons.wav</h1>
+      <h1>Bestagons</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', width: `${5 * 210}px` }}>
+        <WaveChart waveName="sin" />
+        <WaveChart waveName="square" />
+        <WaveChart waveName="sawtooth" />
+        <WaveChart waveName="triangle" />
+        <WaveChart waveName="hex" />
+      </div>
+      <h2>bestagons.wav</h2>
       <audio controls src="./bestagons.wav" id="bestagons" />
       {(analyser !== null) ? (<><FrequencyGraph analyser={analyser} /><WaveformGraph analyser={analyser}></WaveformGraph></>) : (<button onClick={onClick}>Do a thing!</button>)}
     </div>

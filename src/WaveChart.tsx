@@ -32,7 +32,7 @@ const WaveChart: FC<Props> = ({ waveName }) => {
 
   return (
     <div>
-      <h3>{waveName}</h3>
+      <h2>{waveName}</h2>
       <Series width={200} height={125} data={waveData} onClick={playWave} />
     </div>
   )
