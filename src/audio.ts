@@ -57,6 +57,29 @@ export const createFrequenciesNode = (context: AudioContext, wave: Wave, frequen
   return scriptNode;
 };
 
+export const createTakeFirstSampleNode = (context: AudioContext, take: (data: Array<number>) => unknown): ScriptProcessorNode => {
+  const scriptNode = context.createScriptProcessor(bufferSize, 1, 1);
+
+  let first = true;
+
+  scriptNode.onaudioprocess = (audioProcessingEvent: AudioProcessingEvent): void => {
+    const { inputBuffer, outputBuffer } = audioProcessingEvent;
+    const inputData = inputBuffer.getChannelData(0);
+
+    if (first) {
+      take(Array.from(inputData));
+      first = false;
+    }
+
+    const outputData = outputBuffer.getChannelData(0);
+    for (let i = 0; i < inputData.length; i++) {
+      outputData[i] = inputData[i];
+    }
+  };
+
+  return scriptNode;
+};
+
 export const createMicStream = async () => {
   const audioContext = createAudioContext();
   const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
