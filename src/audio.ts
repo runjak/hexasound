@@ -57,10 +57,8 @@ export const createFrequenciesNode = (context: AudioContext, wave: Wave, frequen
   return scriptNode;
 };
 
-export const createTakeFirstSampleNode = (context: AudioContext, take: (data: Array<number>) => unknown): ScriptProcessorNode => {
+export const createTakeSampleNode = (context: AudioContext, take: (data: Array<number>) => unknown): ScriptProcessorNode => {
   const scriptNode = context.createScriptProcessor(bufferSize, 1, 1);
-
-  let first = true;
 
   scriptNode.onaudioprocess = (audioProcessingEvent: AudioProcessingEvent): void => {
     const { inputBuffer, outputBuffer } = audioProcessingEvent;
