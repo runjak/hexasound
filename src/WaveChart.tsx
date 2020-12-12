@@ -1,31 +1,39 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
-import { waves, Wave } from './audio';
+import { waves, Wave, WaveName, createAudioContext, createFrequencyNode } from './audio';
+import Series from './Series';
 
-const chartWave = (wave: Wave): string => {
-  const size = '200x125'
-  const color = '76A4FB'
-  const delta = Math.PI / 40;
-  const iMax = Math.PI * 2;
-  const yScale = 49;
+const useWaveData = (wave: Wave): Array<number> => (useMemo(() => {
+  const xMax = Math.PI * 2;
+  const xDelta = Math.PI / 40;
 
-  const data = [];
-  for (let i = 0; i <= iMax; i += delta) {
-    data.push(wave(i) * yScale + yScale);
+  const data: Array<number> = [];
+  for (let x = 0; x < xMax; x += xDelta) {
+    data.push(wave(x));
   }
 
-  return `https://chart.googleapis.com/chart?cht=lc&chs=${size}&chco=${color}&chd=t:${data.join(',')}`;
-};
+  return data;
+}, [wave]));
 
-const WaveChart: FC = () => {
+type Props = { waveName: WaveName };
+
+const WaveChart: FC<Props> = ({ waveName }) => {
+  const wave = waves[waveName];
+  const waveData = useWaveData(wave);
+
+  const playWave = useCallback(() => {
+    const audioContext = createAudioContext();
+    const a = createFrequencyNode(audioContext, wave, 440, 0.1);
+
+    a.connect(audioContext.destination);
+
+    window.setTimeout(() => { a.disconnect(audioContext.destination) }, 1000);
+  }, [wave]);
+
   return (
     <div>
-    {Object.entries(waves).map(([waveName, wave]) => (
-      <div key={`wave-char-${waveName}`}>
-        <h3>{waveName}</h3>
-        <img src={chartWave(wave)} />
-      </div>
-    ))}
+      <h3>{waveName}</h3>
+      <Series width={200} height={125} data={waveData} onClick={playWave} />
     </div>
   )
 };

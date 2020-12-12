@@ -2,7 +2,6 @@ import React, { FC, useCallback, useState } from 'react';
 import FrequencyGraph from './FrequencyGraph';
 import { createAudioContext, createBestagonStream } from './audio';
 
-import PlayButtons from './PlayButtons';
 import WaveChart from './WaveChart';
 import WaveformGraph from './WaveformGraph';
 
@@ -24,9 +23,11 @@ const App: FC = () => {
 
   return (
     <div>
-      <PlayButtons />
-      <br />
-      <WaveChart />
+      <WaveChart waveName="sin" />
+      <WaveChart waveName="square" />
+      <WaveChart waveName="sawtooth" />
+      <WaveChart waveName="triangle" />
+      <WaveChart waveName="hex" />
       <br />
       <h1>bestagons.wav</h1>
       <audio controls src="./bestagons.wav" id="bestagons" />
