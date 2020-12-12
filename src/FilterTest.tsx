@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import { range, zipWith } from 'lodash';
 
 import { createAudioContext } from './audio';
@@ -24,7 +24,10 @@ const FilterComparison: FC<FilterProps> = ({ firstFilter, secondFilter }) => {
     const maxMagResponse = Math.max(...combinedMagResponse.map(x => Math.abs(x)));
     const normalisedMagResponse = combinedMagResponse.map(x => x / maxMagResponse);
 
-    console.table(zipWith(testFrequencies, combinedMagResponse, firstMagResponse, secondMagResponse, (frequency, combined, first, second) => ({ frequency, combined, first, second })))
+    console.table(zipWith(
+      testFrequencies, combinedMagResponse, firstMagResponse, secondMagResponse, firstPhaseResponse, secondPhaseResponse,
+      (frequency, combinedMag, firstMag, secondMag, firstPhase, secondPhase) => ({ frequency, combinedMag, firstMag, secondMag, firstPhase, secondPhase }),
+    ));
 
     return { normalisedMagResponse };
   }, [firstFilter, secondFilter])
@@ -39,20 +42,22 @@ const FilterComparison: FC<FilterProps> = ({ firstFilter, secondFilter }) => {
 const FilterTest: FC = () => {
   const [firstFreq, setFirstFreq] = useState<number>(5);
   const [secondFreq, setSecondFreq] = useState<number>(20);
+  const [q, setQ] = useState<number>(1);
   const [filterPair, setFilterPair] = useState<[BiquadFilterNode, BiquadFilterNode] | null>(null);
 
   const doThing = useCallback(() => {
     const audioContext = createAudioContext();
-    const firstFilter = new BiquadFilterNode(audioContext, { type: 'bandpass', frequency: firstFreq });
-    const secondFilter = new BiquadFilterNode(audioContext, { type: 'bandpass', frequency: secondFreq });
+    const firstFilter = new BiquadFilterNode(audioContext, { type: 'bandpass', frequency: firstFreq, Q: q });
+    const secondFilter = new BiquadFilterNode(audioContext, { type: 'bandpass', frequency: secondFreq, Q: q });
 
     setFilterPair([firstFilter, secondFilter]);
-  }, [firstFreq, secondFreq, setFilterPair]);
+  }, [firstFreq, secondFreq, q, setFilterPair]);
 
   return (
     <div>
       <input type="number" value={firstFreq} onChange={(event) => setFirstFreq(Number(event.target.value))} />
       <input type="number" value={secondFreq} onChange={(event) => setSecondFreq(Number(event.target.value))} />
+      <input type="number" value={q} onChange={(event) => setQ(Number(event.target.value))} />
       <button onClick={doThing}>Do the thing!</button>
       {(filterPair !== null) && (<FilterComparison firstFilter={filterPair[0]} secondFilter={filterPair[1]} />)}
     </div>
