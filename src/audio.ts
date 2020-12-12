@@ -24,7 +24,7 @@ const square: Wave = (radians) => Math.sign(Math.sin(radians))
 
 const sawtooth: Wave = (radians) => ((radians % Math.PI) / Math.PI * 2) - 1;
 
-const triangle_: Wave = radians => Math.asin(Math.sin(radians));
+const triangle_: Wave = (radians) => Math.asin(Math.sin(radians));
 
 const triangle: Wave = (radians) => triangle_(radians) / (Math.PI / 2);
 
@@ -34,7 +34,7 @@ export const waves = { sin, square, sawtooth, triangle, hex };
 
 export type WaveName = keyof typeof waves;
 
-export const createFrequencyNode = (context: AudioContext, wave: Wave, frequency: number, amplitude: number): ScriptProcessorNode => {
+export const createFrequenciesNode = (context: AudioContext, wave: Wave, frequencies: Array<number>, amplitude: number): ScriptProcessorNode => {
   const scriptNode = context.createScriptProcessor(bufferSize, 0, 1);
   const delta = 1 / context.sampleRate;
   let t = 0;
@@ -45,7 +45,12 @@ export const createFrequencyNode = (context: AudioContext, wave: Wave, frequency
 
     for (let i = 0; i < outputBuffer.length; i++) {
       t += delta;
-      channelData[i] = wave(Math.PI * 2 * (t * frequency)) * amplitude;
+      channelData[i] = 0
+      for (let j = 0; j < frequencies.length; j++) {
+        const frequency = frequencies[j];
+        channelData[i] += wave(Math.PI * 2 * (t * frequency)) * amplitude;
+      }
+      channelData[i] /= frequencies.length;
     }
   };
 

@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo } from 'react';
 
-import { waves, Wave, WaveName, createAudioContext, createFrequencyNode } from './audio';
+import { waves, Wave, WaveName, createAudioContext, createFrequenciesNode } from './audio';
 import Series from './Series';
 
 const useWaveData = (wave: Wave): Array<number> => (useMemo(() => {
@@ -23,7 +23,7 @@ const WaveChart: FC<Props> = ({ waveName }) => {
 
   const playWave = useCallback(() => {
     const audioContext = createAudioContext();
-    const a = createFrequencyNode(audioContext, wave, 440, 0.1);
+    const a = createFrequenciesNode(audioContext, wave, [440], 0.1);
 
     a.connect(audioContext.destination);
 
