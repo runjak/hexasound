@@ -78,7 +78,7 @@ export const createTakeSampleNode = (context: AudioContext, take: (data: Array<n
 export const fooCurve: Array<number> = (() => {
   const curve: Array<number> = [];
   const f = (x: number) => Math.max(-1, Math.min(1, Math.asin(x)));
-  const delta = 0.1;
+  const delta = 0.0001;
 
   for (let x = -1 + delta; x < 0; x += delta) { curve.push(f(x)); }
   curve.push(f(0));
