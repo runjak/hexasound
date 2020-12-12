@@ -66,10 +66,7 @@ export const createTakeFirstSampleNode = (context: AudioContext, take: (data: Ar
     const { inputBuffer, outputBuffer } = audioProcessingEvent;
     const inputData = inputBuffer.getChannelData(0);
 
-    if (first) {
-      take(Array.from(inputData));
-      first = false;
-    }
+    take(Array.from(inputData));
 
     const outputData = outputBuffer.getChannelData(0);
     for (let i = 0; i < inputData.length; i++) {

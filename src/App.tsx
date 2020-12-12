@@ -32,8 +32,12 @@ const App: FC = () => {
         <WaveChart waveName="triangle" />
         <WaveChart waveName="hex" />
       </div>
-      <h2>Comparison 1</h2>
-      <WaveComparison />
+      <h2>Comparison A440</h2>
+      <WaveComparison frequencies={[440]}/>
+      <h2>Comparison D294</h2>
+      <WaveComparison frequencies={[294]}/>
+      <h2>Comparison D294 + A440</h2>
+      <WaveComparison frequencies={[294, 440]}/>
       <h2>bestagons.wav</h2>
       <audio controls src="./bestagons.wav" id="bestagons" />
       {(analyser !== null) ? (<><FrequencyGraph analyser={analyser} /><WaveformGraph analyser={analyser}></WaveformGraph></>) : (<button onClick={onClick}>Do a thing!</button>)}
