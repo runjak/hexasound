@@ -26,11 +26,11 @@ const App: FC = () => {
       <h2>ShapeCurve</h2>
       <Series width={200} height={200} data={fooCurve} />
       <h2>Comparison A440</h2>
-      <WaveComparison frequencies={[440]}/>
+      <WaveComparison frequencies={[440]} />
       <h2>Comparison D294</h2>
-      <WaveComparison frequencies={[294]}/>
+      <WaveComparison frequencies={[294]} />
       <h2>Comparison D294 + A440</h2>
-      <WaveComparison frequencies={[294, 440]}/>
+      <WaveComparison frequencies={[294, 440]} />
       <h2>bestagons.wav</h2>
       <audio controls src="./bestagons.wav" id="bestagons" />
       <BestagonComparison />

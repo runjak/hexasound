@@ -1,6 +1,7 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useMemo } from 'react';
+import { HorizontalGridLines, LineSeriesCanvas, VerticalGridLines, XYPlot, YAxis } from 'react-vis';
 
-const yMargin = 1;
+import 'react-vis/dist/style.css';
 
 type Props = {
   width: number;
@@ -10,44 +11,20 @@ type Props = {
 };
 
 const Series: FC<Props> = ({ width, height, data, onClick }) => {
-  const [canvas, setCanvas] = useState<null | HTMLCanvasElement>(null)
-
-  useEffect(() => {
-    if (!canvas) { return; }
-
-    canvas.width = width;
-    canvas.height = height;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) { return; }
-
-    ctx.fillStyle = 'rgb(0, 0, 0)';
-    ctx.fillRect(0, 0, width, height);
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = 'rgb(200, 200, 200)';
-
-    const unit = Math.round(height / 2) - (2 * yMargin + 1);
-    const sliceWidth = width / (data.length - 1);
-    let x = 0;
-    for (let i = 0; i < data.length; i++) {
-      let y = -data[i] * unit + unit + (2 * yMargin);
-
-      if (i === 0) {
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-      } else {
-        ctx.lineTo(x, y);
-      }
-
-      x += sliceWidth;
-    }
-
-    ctx.stroke();
-
-  }, [canvas, width, height, data]);
+  const dataPoints = useMemo(() => data.map((y, x) => ({ x, y })), [data]);
 
   return (
-    <canvas ref={setCanvas} style={{ width, height }} onClick={onClick} />
+    <div onClick={onClick}>
+      <XYPlot width={width} height={height}>
+        <HorizontalGridLines />
+        <VerticalGridLines />
+        <YAxis />
+        <LineSeriesCanvas
+          className="first-series"
+          data={dataPoints}
+        />
+      </XYPlot>
+    </div>
   );
 };
 
