@@ -7,7 +7,7 @@ import MultiSeries, { MultiSeriesData } from './MultiSeries';
 type FilterProps = { filters: Array<BiquadFilterNode> };
 
 const hearingStart = 20;
-const hearingEnd = 2000;
+const hearingEnd = 20000;
 
 const FilterComparison: FC<FilterProps> = ({ filters }) => {
   const [magData, phaseData]: [MultiSeriesData, MultiSeriesData] = useMemo(() => {
@@ -16,7 +16,7 @@ const FilterComparison: FC<FilterProps> = ({ filters }) => {
 
     const startValue = hearingStart
     const endValue = hearingEnd + 1;
-    const testFrequencies = Float32Array.from(range(startValue, endValue, 50));
+    const testFrequencies = Float32Array.from(range(startValue, endValue, 10));
     const magThing = new Float32Array(testFrequencies.length);
     const phaseThing = new Float32Array(testFrequencies.length);
 
@@ -50,7 +50,7 @@ const FilterComparison: FC<FilterProps> = ({ filters }) => {
 };
 
 const FilterTest: FC = () => {
-  const [frequencies, setFrequencies] = useState<Array<number>>([5, 20]);
+  const [frequencies, setFrequencies] = useState<Array<number>>([100, 440]);
   const [Q, setQ] = useState<number>(1);
   const [filters, setFilters] = useState<Array<BiquadFilterNode> | null>(null);
 
