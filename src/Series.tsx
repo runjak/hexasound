@@ -30,7 +30,7 @@ const Series: FC<Props> = ({ width, height, data, onClick }) => {
     const sliceWidth = width / (data.length - 1);
     let x = 0;
     for (let i = 0; i < data.length; i++) {
-      let y = data[i] * unit + unit + (2 * yMargin);
+      let y = -data[i] * unit + unit + (2 * yMargin);
 
       if (i === 0) {
         ctx.beginPath();
