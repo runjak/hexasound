@@ -6,6 +6,7 @@ import WaveComparison from './WaveComparison';
 import Series from './Series';
 import BestagonComparison from './BestagonComparison';
 import FilterTest from './FilterTest';
+import BankComparison from './BankComparison';
 
 const App: FC = () => {
   return (
@@ -23,12 +24,14 @@ const App: FC = () => {
       <FilterTest />
       <h2>ShapeCurve</h2>
       <Series width={200} height={200} data={fooCurve} />
-      <h2>Comparison A440</h2>
+      <h2>WaveComparison A440</h2>
       <WaveComparison frequencies={[440]} />
-      <h2>Comparison D294</h2>
+      <h2>WaveComparison D294</h2>
       <WaveComparison frequencies={[294]} />
-      <h2>Comparison D294 + A440</h2>
+      <h2>WaveComparison D294 + A440</h2>
       <WaveComparison frequencies={[294, 440]} />
+      <h2>BankComparison D294 + A440</h2>
+      <BankComparison frequencies={[294,440]} bankFrequencies={[294, 440]} Q={1} />
       <h2>bestagons.wav</h2>
       <audio controls src="./bestagons.wav" id="bestagons" />
       <BestagonComparison />

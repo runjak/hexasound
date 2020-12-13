@@ -94,6 +94,24 @@ export const createFooNode = (context: AudioContext): WaveShaperNode => {
   return shaperNode;
 };
 
+export const createFooBank = (context: AudioContext, frequencies: Array<number>, Q: number): [ChannelSplitterNode, ChannelMergerNode] => {
+  const splitter = context.createChannelSplitter(frequencies.length);
+  const filters = frequencies.map(frequency => new BiquadFilterNode(context, { type: 'bandpass', frequency, Q }));
+  filters.forEach((filter, i) => splitter.connect(filter, i));
+
+  const shapers = filters.map(filter => {
+    const shaper = createFooNode(context)
+    filter.connect(shaper);
+    return shaper;
+  });
+  // const shapers = [...filters]; // FIXME madness goes here ;)
+
+  const merger = context.createChannelMerger(filters.length);
+  shapers.forEach((shaper, i) => shaper.connect(merger, undefined, i));
+
+  return [splitter, merger];
+};
+
 export const createMicStream = async () => {
   const audioContext = createAudioContext();
   const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
