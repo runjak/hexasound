@@ -24,9 +24,11 @@ const FilterComparison: FC<FilterProps> = ({ firstFilter, secondFilter }) => {
     const maxMagResponse = Math.max(...combinedMagResponse.map(x => Math.abs(x)));
     const normalisedMagResponse = combinedMagResponse.map(x => x / maxMagResponse);
 
+    const combinedPhaseResponse = zipWith(firstPhaseResponse, secondPhaseResponse, (x, y) => Math.abs(x) < Math.abs(y) ? x : y);
+
     console.table(zipWith(
-      testFrequencies, combinedMagResponse, firstMagResponse, secondMagResponse, firstPhaseResponse, secondPhaseResponse,
-      (frequency, combinedMag, firstMag, secondMag, firstPhase, secondPhase) => ({ frequency, combinedMag, firstMag, secondMag, firstPhase, secondPhase }),
+      testFrequencies, combinedMagResponse, combinedPhaseResponse,
+      (frequency, combinedMag, combinedPhase) => ({ frequency, combinedMag: combinedMag.toFixed(4), combinedPhase: combinedPhase.toFixed(4) }),
     ));
 
     return { normalisedMagResponse };
@@ -42,6 +44,7 @@ const FilterComparison: FC<FilterProps> = ({ firstFilter, secondFilter }) => {
 const FilterTest: FC = () => {
   const [firstFreq, setFirstFreq] = useState<number>(5);
   const [secondFreq, setSecondFreq] = useState<number>(20);
+  const freqDelta = secondFreq - firstFreq;
   const [q, setQ] = useState<number>(1);
   const [filterPair, setFilterPair] = useState<[BiquadFilterNode, BiquadFilterNode] | null>(null);
 
@@ -59,6 +62,8 @@ const FilterTest: FC = () => {
       <input type="number" value={secondFreq} onChange={(event) => setSecondFreq(Number(event.target.value))} />
       <input type="number" value={q} onChange={(event) => setQ(Number(event.target.value))} />
       <button onClick={doThing}>Do the thing!</button>
+      <button onClick={() => { setFirstFreq(firstFreq - freqDelta); setSecondFreq(secondFreq - freqDelta); }}>⬅️</button>
+      <button onClick={() => { setFirstFreq(firstFreq + freqDelta); setSecondFreq(secondFreq + freqDelta); }}>➡️</button>
       {(filterPair !== null) && (<FilterComparison firstFilter={filterPair[0]} secondFilter={filterPair[1]} />)}
     </div>
   );
