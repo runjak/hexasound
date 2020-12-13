@@ -1,6 +1,5 @@
 import React, { FC, useMemo } from 'react';
 import { HorizontalGridLines, LineSeriesCanvas, VerticalGridLines, XYPlot, YAxis } from 'react-vis';
-
 import 'react-vis/dist/style.css';
 
 type Props = {
@@ -19,10 +18,7 @@ const Series: FC<Props> = ({ width, height, data, onClick }) => {
         <HorizontalGridLines />
         <VerticalGridLines />
         <YAxis />
-        <LineSeriesCanvas
-          className="first-series"
-          data={dataPoints}
-        />
+        <LineSeriesCanvas data={dataPoints} />
       </XYPlot>
     </div>
   );
