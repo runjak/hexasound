@@ -1,9 +1,7 @@
-import React, { FC, useCallback, useState } from 'react';
-import FrequencyGraph from './FrequencyGraph';
-import { createAudioContext, createBestagonStream, fooCurve } from './audio';
+import React, { FC, } from 'react';
+import { fooCurve } from './audio';
 
 import WaveChart from './WaveChart';
-import WaveformGraph from './WaveformGraph';
 import WaveComparison from './WaveComparison';
 import Series from './Series';
 import BestagonComparison from './BestagonComparison';
