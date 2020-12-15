@@ -77,8 +77,8 @@ const Waterfall: FC<{ data: Array<number> }> = ({ data }) => {
 
 const PlaybackComparison: FC = () => {
   const [playbackBuffer, setPlaybackBuffer] = useState<Array<number>>([]);
-  const [recordingSample, setRecordingSample] = useState<null | Array<number>>(null);
-  const [playbackSample, setPlaybackSample] = useState<null | Array<number>>(null);
+  const [recordingSample, setRecordingSample] = useState<Array<number>>([]);
+  const [playbackSample, setPlaybackSample] = useState<Array<number>>([]);
 
   const doPlay = useCallback((input: AudioNode) => {
     const context = createAudioContext();
@@ -136,10 +136,10 @@ const PlaybackComparison: FC = () => {
         <button onClick={playBestagons}>Bestagons</button>
         <button onClick={playMic}>Mic</button>
       </div>
-      <Series height={100} width={750} data={recordingSample ?? []} />
+      <Series height={100} width={750} data={recordingSample} />
       <h3>Playback:</h3>
       <button onClick={onPlayback}>Play</button>
-      <Series height={100} width={750} data={playbackSample ?? []} />
+      <Series height={100} width={750} data={playbackSample} />
       <h3>Frequencies:</h3>
       <Waterfall data={playbackBuffer} />
     </>
