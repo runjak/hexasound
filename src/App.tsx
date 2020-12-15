@@ -7,6 +7,7 @@ import Series from './Series';
 import BestagonComparison from './BestagonComparison';
 import FilterTest from './FilterTest';
 import BankComparison from './BankComparison';
+import PlaybackComparison from './PlaybackComparison';
 
 const App: FC = () => {
   return (
@@ -35,6 +36,8 @@ const App: FC = () => {
       <h2>bestagons.wav</h2>
       <audio controls src="./bestagons.wav" id="bestagons" />
       <BestagonComparison />
+      <h2>PlaybackComparison</h2>
+      <PlaybackComparison />
     </div>
   );
 }

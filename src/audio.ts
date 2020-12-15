@@ -75,6 +75,27 @@ export const createTakeSampleNode = (context: AudioContext, take: (data: Array<n
   return scriptNode;
 };
 
+export const createTakeAllNode = (context: AudioContext): [Array<number>, ScriptProcessorNode] => {
+  const allBuffer: Array<number> = [];
+  return [allBuffer, createTakeSampleNode(context, (data) => allBuffer.push(...data))];
+};
+
+export const createPlayArrayNode = (context: AudioContext, data: Array<number>, onDone: () => unknown): ScriptProcessorNode => {
+  const copy = Array.from(data);
+  const scriptNode = context.createScriptProcessor(bufferSize, 0, 1);
+
+  scriptNode.onaudioprocess = ({ outputBuffer }: AudioProcessingEvent): void => {
+    if (copy.length === 0) { onDone(); }
+
+    const outputChannel = outputBuffer.getChannelData(0);
+    for (let i = 0; i < outputChannel.length; i++) {
+      outputChannel[i] = copy.shift() ?? 0;
+    }
+  };
+
+  return scriptNode;
+};
+
 export const fooCurve: Array<number> = (() => {
   const curve: Array<number> = [];
   const f = (x: number) => Math.max(-1, Math.min(1, Math.asin(x)));
