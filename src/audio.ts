@@ -85,7 +85,7 @@ export const createPlayArrayNode = (context: AudioContext, data: Array<number>, 
   const scriptNode = context.createScriptProcessor(bufferSize, 0, 1);
 
   scriptNode.onaudioprocess = ({ outputBuffer }: AudioProcessingEvent): void => {
-    if (copy.length === 0) { onDone(); }
+    if (copy.length === 0) { try { onDone(); } catch (e) { console.log('silenced', e); } }
 
     const outputChannel = outputBuffer.getChannelData(0);
     for (let i = 0; i < outputChannel.length; i++) {
@@ -155,3 +155,21 @@ export const createBestagonStream = memo(() => {
 
   return audioContext.createMediaElementSource(element);
 });
+
+export function* slidingWindows(data: Array<number>): Generator<Array<number>, void, unknown> {
+  const iMax = data.length - bufferSize;
+  for (let i = 0; i < iMax; i++) {
+    yield data.slice(i, i + bufferSize);
+  }
+}
+
+export function* bufferWindows(data: Array<number>): Generator<Array<number>, void, unknown> {
+  const iMax = data.length - bufferSize;
+  for (let i = 0; i < iMax; i += bufferSize) {
+    yield data.slice(i, i + bufferSize);
+  }
+}
+
+export const indexToFrequency = (context: AudioContext) => (i: number) => (i * (context.sampleRate / bufferSize / 2));
+
+export type FFTOutput = { imag: Float64Array, real: Float64Array };
