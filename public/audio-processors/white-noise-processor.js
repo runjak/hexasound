@@ -3,8 +3,7 @@ class WhiteNoiseProcessor extends AudioWorkletProcessor {
 
   constructor(options) {
     super();
-    this.amplitude = (options)?.processorOptions?.amplitude ?? 1;
-    console.log('DRAGONS', options);
+    this.amplitude = options?.processorOptions?.amplitude ?? 1;
   }
 
   process(inputs, outputs, parameters) {

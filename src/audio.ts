@@ -16,13 +16,14 @@ export const createAudioContext = memo(async () => {
   const context = new AudioContext();
 
   await Promise.all([
-    context.audioWorklet.addModule('/audio-processors/white-noise-processor.js')
+    context.audioWorklet.addModule('/audio-processors/white-noise-processor.js'),
+    context.audioWorklet.addModule('/audio-processors/simple-wave-processor.js'),
   ]);
 
   return context;
 });
 
-export const createNoiseNode = (context: AudioContext, amplitude: number) => (
+export const createNoiseNode = (context: AudioContext, amplitude: number): AudioWorkletNode => (
   new AudioWorkletNode(context, 'white-noise-processor', { processorOptions: { amplitude } })
 );
 
@@ -31,43 +32,19 @@ const bufferSize = 4096;
 export type Wave = (radians: number) => number;
 
 const sin: Wave = Math.sin;
-
 const square: Wave = (radians) => Math.sign(Math.sin(radians))
-
 const sawtooth: Wave = (radians) => ((radians % Math.PI) / Math.PI * 2) - 1;
-
 const triangle_: Wave = (radians) => Math.asin(Math.sin(radians));
-
 const triangle: Wave = (radians) => triangle_(radians) / (Math.PI / 2);
-
 const hex: Wave = (radians) => Math.min(1, Math.max(triangle_(radians), -1));
+
+export const createSimpleWaveNode = (context: AudioContext, wave: WaveName, frequencies:Array<number>, amplitude: number) => (
+  new AudioWorkletNode(context, 'simple-wave-processor', { processorOptions: { wave, frequencies, amplitude } })
+);
 
 export const waves = { sin, square, sawtooth, triangle, hex };
 
 export type WaveName = keyof typeof waves;
-
-export const createFrequenciesNode = (context: AudioContext, wave: Wave, frequencies: Array<number>, amplitude: number): ScriptProcessorNode => {
-  const scriptNode = context.createScriptProcessor(bufferSize, 0, 1);
-  const delta = 1 / context.sampleRate;
-  let t = 0;
-
-  scriptNode.onaudioprocess = (audioProcessingEvent: AudioProcessingEvent): void => {
-    const { outputBuffer } = audioProcessingEvent;
-    const channelData = outputBuffer.getChannelData(0);
-
-    for (let i = 0; i < outputBuffer.length; i++) {
-      t += delta;
-      channelData[i] = 0
-      for (let j = 0; j < frequencies.length; j++) {
-        const frequency = frequencies[j];
-        channelData[i] += wave(Math.PI * 2 * (t * frequency)) * amplitude;
-      }
-      channelData[i] /= frequencies.length;
-    }
-  };
-
-  return scriptNode;
-};
 
 export const createTakeSampleNode = (context: AudioContext, take: (data: Array<number>) => unknown): ScriptProcessorNode => {
   const scriptNode = context.createScriptProcessor(bufferSize, 1, 1);

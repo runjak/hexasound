@@ -6,13 +6,12 @@ import {
   bufferWindows,
   createAudioContext,
   createBestagonStream,
-  createFrequenciesNode,
   createMicStream,
   createPlayArrayNode,
+  createSimpleWaveNode,
   createTakeAllNode,
   createTakeSampleNode,
   FFTOutput,
-  waves,
 } from './audio';
 import Series from './Series';
 import { HeatmapSeries, XAxis, XYPlot, YAxis } from 'react-vis';
@@ -56,7 +55,6 @@ const Waterfall: FC<{ data: Array<number> }> = ({ data }) => {
     if (finishedInTime) {
       const heatmapData = toHeatmapData(protoData);
       setHeatmapData(heatmapData);
-      console.log('finishedInTime', protoData, heatmapData);
     }
 
     return () => {
@@ -99,15 +97,15 @@ const PlaybackComparison: FC = () => {
 
   const playD = useCallback(async () => {
     const context = await createAudioContext();
-    doPlay(createFrequenciesNode(context, waves.sin, [294], .5));
+    doPlay(createSimpleWaveNode(context, 'sin', [294], .5));
   }, [doPlay]);
   const playA = useCallback(async () => {
     const context = await createAudioContext();
-    doPlay(createFrequenciesNode(context, waves.sin, [440], .5));
+    doPlay(createSimpleWaveNode(context, 'sin', [440], .5));
   }, [doPlay]);
   const playDA = useCallback(async () => {
     const context = await createAudioContext();
-    doPlay(createFrequenciesNode(context, waves.sin, [294, 440], .5));
+    doPlay(createSimpleWaveNode(context, 'sin', [294, 440], .5));
   }, [doPlay]);
   const playBestagons = useCallback(async () => {
     const bestagonStream = await createBestagonStream();

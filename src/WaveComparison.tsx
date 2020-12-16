@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useState } from 'react';
-import { createAudioContext, createFooNode, createFrequenciesNode, createTakeSampleNode, waves } from './audio';
+import { createAudioContext, createFooNode, createSimpleWaveNode, createTakeSampleNode } from './audio';
 import Series from './Series';
 
 type Props = { frequencies: Array<number> };
@@ -12,7 +12,7 @@ const WaveComparison: FC<Props> = ({ frequencies }) => {
     const audioContext = await createAudioContext();
 
     const take = 1000;
-    const input = createFrequenciesNode(audioContext, waves.sin, frequencies, 1);
+    const input = createSimpleWaveNode(audioContext, 'sin', frequencies, 1);
     const takeInput = createTakeSampleNode(audioContext, data => setInputSample(data.slice(0, take)));
     const waveShaping = createFooNode(audioContext);
     const takeOutput = createTakeSampleNode(audioContext, data => setOutputSample(data.slice(0, take)));

@@ -28,7 +28,7 @@ const NoiseChart: FC = () => {
 
   return (
     <div>
-      <h2>Noise</h2>
+      <h2>noise</h2>
       <Series width={200} height={125} data={noiseData} onClick={playNoise} />
     </div>
   )
