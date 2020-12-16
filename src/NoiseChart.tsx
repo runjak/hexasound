@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo } from 'react';
 
-import { createAudioContext } from './audio';
+import { createAudioContext, createNoiseNode } from './audio';
 import Series from './Series';
 
 const useNoiseData = (): Array<number> => (useMemo(() => {
@@ -18,12 +18,12 @@ const useNoiseData = (): Array<number> => (useMemo(() => {
 const NoiseChart: FC = () => {
   const noiseData = useNoiseData();
   const playNoise = useCallback(async () => {
-    const audioContext = await createAudioContext();
-    const noise = new AudioWorkletNode(audioContext, 'white-noise-processor');
+    const context = await createAudioContext();
+    const noise = createNoiseNode(context, 0.3);
 
-    noise.connect(audioContext.destination);
+    noise.connect(context.destination);
 
-    window.setTimeout(() => { noise.disconnect(audioContext.destination) }, 1000);
+    window.setTimeout(() => { noise.disconnect(context.destination) }, 1000);
   }, []);
 
   return (

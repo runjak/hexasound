@@ -22,6 +22,10 @@ export const createAudioContext = memo(async () => {
   return context;
 });
 
+export const createNoiseNode = (context: AudioContext, amplitude: number) => (
+  new AudioWorkletNode(context, 'white-noise-processor', { processorOptions: { amplitude } })
+);
+
 const bufferSize = 4096;
 
 export type Wave = (radians: number) => number;
