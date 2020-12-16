@@ -8,8 +8,8 @@ const WaveComparison: FC<Props> = ({ frequencies }) => {
   const [inputSample, setInputSample] = useState<null | Array<number>>(null);
   const [outputSample, setOutputSample] = useState<null | Array<number>>(null);
 
-  const playComparison = useCallback((playInput: boolean) => {
-    const audioContext = createAudioContext();
+  const playComparison = useCallback(async (playInput: boolean) => {
+    const audioContext = await createAudioContext();
 
     const take = 1000;
     const input = createFrequenciesNode(audioContext, waves.sin, frequencies, 1);

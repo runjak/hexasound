@@ -6,11 +6,11 @@ const BestagonComparison: FC = () => {
   const [inputSample, setInputSample] = useState<null | Array<number>>(null);
   const [outputSample, setOutputSample] = useState<null | Array<number>>(null);
 
-  const playComparison = useCallback(() => {
-    const audioContext = createAudioContext();
+  const playComparison = useCallback(async () => {
+    const audioContext = await createAudioContext();
 
     const take = 1000;
-    const input = createBestagonStream();
+    const input = await createBestagonStream();
     const takeInput = createTakeSampleNode(audioContext, data => setInputSample(data.slice(0, take)));
     const waveShaping = createFooNode(audioContext);
     const takeOutput = createTakeSampleNode(audioContext, data => setOutputSample(data.slice(0, take)));

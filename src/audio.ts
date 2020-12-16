@@ -12,7 +12,15 @@ const memo = <T extends unknown>(f: (() => T)): (() => T) => {
   };
 };
 
-export const createAudioContext = memo(() => new AudioContext());
+export const createAudioContext = memo(async () => {
+  const context = new AudioContext();
+
+  await Promise.all([
+    context.audioWorklet.addModule('/audio-processors/white-noise-processor.js')
+  ]);
+
+  return context;
+});
 
 const bufferSize = 4096;
 
@@ -134,15 +142,15 @@ export const createFooBank = (context: AudioContext, frequencies: Array<number>,
 };
 
 export const createMicStream = async () => {
-  const audioContext = createAudioContext();
+  const audioContext = await createAudioContext();
   const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
   return audioContext.createMediaStreamSource(audioStream);
 };
 
-export const createBestagonStream = memo(() => {
+export const createBestagonStream = memo(async () => {
   const selector = '#bestagons';
-  const audioContext = createAudioContext();
+  const audioContext = await createAudioContext();
   const element = document.querySelector(selector);
 
   if (!element) {

@@ -80,8 +80,8 @@ const PlaybackComparison: FC = () => {
   const [recordingSample, setRecordingSample] = useState<Array<number>>([]);
   const [playbackSample, setPlaybackSample] = useState<Array<number>>([]);
 
-  const doPlay = useCallback((input: AudioNode) => {
-    const context = createAudioContext();
+  const doPlay = useCallback(async (input: AudioNode) => {
+    const context = await createAudioContext();
     const takeInput = createTakeSampleNode(context, data => (setRecordingSample(data.slice(0, takeSize))));
     const [playbackData, takeAllInput] = createTakeAllNode(context);
 
@@ -97,25 +97,29 @@ const PlaybackComparison: FC = () => {
     }, 1000);
   }, [setPlaybackBuffer, setRecordingSample]);
 
-  const playD = useCallback(() => {
-    doPlay(createFrequenciesNode(createAudioContext(), waves.sin, [294], .5));
+  const playD = useCallback(async () => {
+    const context = await createAudioContext();
+    doPlay(createFrequenciesNode(context, waves.sin, [294], .5));
   }, [doPlay]);
-  const playA = useCallback(() => {
-    doPlay(createFrequenciesNode(createAudioContext(), waves.sin, [440], .5));
+  const playA = useCallback(async () => {
+    const context = await createAudioContext();
+    doPlay(createFrequenciesNode(context, waves.sin, [440], .5));
   }, [doPlay]);
-  const playDA = useCallback(() => {
-    doPlay(createFrequenciesNode(createAudioContext(), waves.sin, [294, 440], .5));
+  const playDA = useCallback(async () => {
+    const context = await createAudioContext();
+    doPlay(createFrequenciesNode(context, waves.sin, [294, 440], .5));
   }, [doPlay]);
-  const playBestagons = useCallback(() => {
-    doPlay(createBestagonStream());
+  const playBestagons = useCallback(async () => {
+    const bestagonStream = await createBestagonStream();
+    doPlay(bestagonStream);
   }, [doPlay]);
   const playMic = useCallback(async () => {
     const input = await createMicStream();
     doPlay(input);
   }, [doPlay]);
 
-  const onPlayback = useCallback(() => {
-    const context = createAudioContext();
+  const onPlayback = useCallback(async () => {
+    const context = await createAudioContext();
     const takeInput = createTakeSampleNode(context, (data) => setPlaybackSample(data.slice(0, takeSize)));
     const input = createPlayArrayNode(context, playbackBuffer, () => {
       input.disconnect(takeInput);

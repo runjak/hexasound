@@ -21,8 +21,8 @@ const WaveChart: FC<Props> = ({ waveName }) => {
   const wave = waves[waveName];
   const waveData = useWaveData(wave);
 
-  const playWave = useCallback(() => {
-    const audioContext = createAudioContext();
+  const playWave = useCallback(async () => {
+    const audioContext = await createAudioContext();
     const a = createFrequenciesNode(audioContext, wave, [440], 0.1);
 
     a.connect(audioContext.destination);
