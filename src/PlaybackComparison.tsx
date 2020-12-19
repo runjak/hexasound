@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { fft } from 'audio-fns';
 
@@ -42,24 +42,16 @@ const toHeatmapData = (protoData: Array<FFTOutput>): HeatmapData => {
 };
 
 const Waterfall: FC<{ data: Array<number> }> = ({ data }) => {
-  const [heatmapData, setHeatmapData] = useState<HeatmapData>(exampleData);
-  useEffect(() => {
-    let finishedInTime = true;
-
+  const protoData = useMemo(() => {
     const protoData: Array<FFTOutput> = [];
     Array.from(bufferWindows(data)).forEach((w) => {
       protoData.push(fft(Float64Array.from(w)));
     });
-
-    if (finishedInTime) {
-      const heatmapData = toHeatmapData(protoData);
-      setHeatmapData(heatmapData);
-    }
-
-    return () => {
-      finishedInTime = false;
-    };
+    return protoData;
   }, [data]);
+  const heatmapData = useMemo(() => {
+    return toHeatmapData(protoData);
+  }, [protoData])
 
   return (
     <div>
