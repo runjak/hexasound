@@ -19,7 +19,6 @@ export const createAudioContext = memo(async () => {
     context.audioWorklet.addModule('/audio-processors/white-noise-processor.js'),
     context.audioWorklet.addModule('/audio-processors/simple-wave-processor.js'),
     context.audioWorklet.addModule('/audio-processors/copy-buffer-processor.js'),
-    context.audioWorklet.addModule('/audio-processors/play-buffer-processor.js'),
   ]);
 
   return context;
@@ -62,9 +61,18 @@ export const createCopyBufferNode = (context: AudioContext, copyMode: 'all' | 'f
 };
 
 export const createPlayBufferNode = (context: AudioContext, buffer: Array<number>, onDone: () => unknown) => {
-  const playBufferNode = new AudioWorkletNode(context, 'play-buffer-processor', { processorOptions: { buffer } })
-  playBufferNode.port.onmessage = onDone;
-  return playBufferNode;
+  const audioBuffer = context.createBuffer(1, buffer.length, context.sampleRate);
+  const channel = audioBuffer.getChannelData(0);
+  for (let i = 0; i < buffer.length; i++) {
+    channel[i] = buffer[i];
+  }
+
+  const source = context.createBufferSource();
+  source.buffer = audioBuffer;
+  source.onended = onDone;
+  source.start();
+
+  return source;
 };
 
 export const fooCurve: Array<number> = (() => {
