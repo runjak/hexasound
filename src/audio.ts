@@ -60,29 +60,6 @@ export const createCopyBufferNode = (context: AudioContext, copyMode: 'all' | 'f
   return copyBufferNode;
 };
 
-export const createTakeSampleNode = (context: AudioContext, take: (data: Array<number>) => unknown): ScriptProcessorNode => {
-  const scriptNode = context.createScriptProcessor(bufferSize, 1, 1);
-
-  scriptNode.onaudioprocess = (audioProcessingEvent: AudioProcessingEvent): void => {
-    const { inputBuffer, outputBuffer } = audioProcessingEvent;
-    const inputData = inputBuffer.getChannelData(0);
-
-    take(Array.from(inputData));
-
-    const outputData = outputBuffer.getChannelData(0);
-    for (let i = 0; i < inputData.length; i++) {
-      outputData[i] = inputData[i];
-    }
-  };
-
-  return scriptNode;
-};
-
-export const createTakeAllNode = (context: AudioContext): [Array<number>, ScriptProcessorNode] => {
-  const allBuffer: Array<number> = [];
-  return [allBuffer, createTakeSampleNode(context, (data) => allBuffer.push(...data))];
-};
-
 export const createPlayArrayNode = (context: AudioContext, data: Array<number>, onDone: () => unknown): ScriptProcessorNode => {
   const copy = Array.from(data);
   const scriptNode = context.createScriptProcessor(bufferSize, 0, 1);
@@ -137,15 +114,15 @@ export const createFooBank = (context: AudioContext, frequencies: Array<number>,
 };
 
 export const createMicStream = async () => {
-  const audioContext = await createAudioContext();
+  const context = await createAudioContext();
   const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-  return audioContext.createMediaStreamSource(audioStream);
+  return context.createMediaStreamSource(audioStream);
 };
 
 export const createBestagonStream = memo(async () => {
   const selector = '#bestagons';
-  const audioContext = await createAudioContext();
+  const context = await createAudioContext();
   const element = document.querySelector(selector);
 
   if (!element) {
@@ -156,7 +133,7 @@ export const createBestagonStream = memo(async () => {
     throw new Error(`Element for selector '${selector}' is not an HTMLMediaElement!`);
   }
 
-  return audioContext.createMediaElementSource(element);
+  return context.createMediaElementSource(element);
 });
 
 export function* slidingWindows(data: Array<number>): Generator<Array<number>, void, unknown> {

@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useState } from 'react';
-import { createAudioContext, createBestagonStream, createFooNode, createTakeSampleNode } from './audio';
+import { createAudioContext, createBestagonStream, createCopyBufferNode, createFooNode } from './audio';
 import Series from './Series';
 
 const BestagonComparison: FC = () => {
@@ -7,18 +7,18 @@ const BestagonComparison: FC = () => {
   const [outputSample, setOutputSample] = useState<null | Array<number>>(null);
 
   const playComparison = useCallback(async () => {
-    const audioContext = await createAudioContext();
-
+    const context = await createAudioContext();
     const take = 1000;
+
     const input = await createBestagonStream();
-    const takeInput = createTakeSampleNode(audioContext, data => setInputSample(data.slice(0, take)));
-    const waveShaping = createFooNode(audioContext);
-    const takeOutput = createTakeSampleNode(audioContext, data => setOutputSample(data.slice(0, take)));
+    const takeInput = createCopyBufferNode(context, 'first', ({ buffer }) => setInputSample(buffer.slice(0, take)));
+    const waveShaping = createFooNode(context);
+    const takeOutput = createCopyBufferNode(context, 'first', ({ buffer }) => setOutputSample(buffer.slice(0, take)));
 
     input.connect(takeInput);
     takeInput.connect(waveShaping);
     waveShaping.connect(takeOutput);
-    takeOutput.connect(audioContext.destination);
+    takeOutput.connect(context.destination);
   }, [setInputSample, setOutputSample]);
 
   return (

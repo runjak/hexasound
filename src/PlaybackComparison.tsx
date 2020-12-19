@@ -6,11 +6,10 @@ import {
   bufferWindows,
   createAudioContext,
   createBestagonStream,
+  createCopyBufferNode,
   createMicStream,
   createPlayArrayNode,
   createSimpleWaveNode,
-  createTakeAllNode,
-  createTakeSampleNode,
   FFTOutput,
 } from './audio';
 import Series from './Series';
@@ -80,8 +79,9 @@ const PlaybackComparison: FC = () => {
 
   const doPlay = useCallback(async (input: AudioNode) => {
     const context = await createAudioContext();
-    const takeInput = createTakeSampleNode(context, data => (setRecordingSample(data.slice(0, takeSize))));
-    const [playbackData, takeAllInput] = createTakeAllNode(context);
+    const takeInput = createCopyBufferNode(context, 'first', ({ buffer }) => setRecordingSample(buffer.slice(0, takeSize)));
+    let playbackData: Array<number> = [];
+    const takeAllInput = createCopyBufferNode(context, 'all', ({ buffer }) => playbackData.push(...buffer));
 
     input.connect(takeInput);
     takeInput.connect(takeAllInput);
@@ -91,7 +91,7 @@ const PlaybackComparison: FC = () => {
       input.disconnect(takeInput);
       takeInput.disconnect(takeAllInput);
       takeAllInput.disconnect(context.destination);
-      setPlaybackBuffer(playbackData);
+      setPlaybackBuffer(playbackData.slice());
     }, 1000);
   }, [setPlaybackBuffer, setRecordingSample]);
 
@@ -118,7 +118,7 @@ const PlaybackComparison: FC = () => {
 
   const onPlayback = useCallback(async () => {
     const context = await createAudioContext();
-    const takeInput = createTakeSampleNode(context, (data) => setPlaybackSample(data.slice(0, takeSize)));
+    const takeInput = createCopyBufferNode(context, 'first', ({ buffer }) => setPlaybackSample(buffer.slice(0, takeSize)));
     const input = createPlayArrayNode(context, playbackBuffer, () => {
       input.disconnect(takeInput);
       takeInput.disconnect(context.destination);

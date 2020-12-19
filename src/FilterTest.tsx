@@ -55,8 +55,8 @@ const FilterTest: FC = () => {
   const [filters, setFilters] = useState<Array<BiquadFilterNode> | null>(null);
 
   const doThing = useCallback(async () => {
-    const audioContext = await createAudioContext();
-    setFilters(frequencies.map(frequency => (new BiquadFilterNode(audioContext, { type: 'bandpass', frequency, Q }))));
+    const context = await createAudioContext();
+    setFilters(frequencies.map(frequency => (new BiquadFilterNode(context, { type: 'bandpass', frequency, Q }))));
   }, [frequencies, Q, setFilters]);
 
   return (
