@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { fft } from 'audio-fns';
 
@@ -16,21 +16,6 @@ import Series from './Series';
 import { HeatmapSeries, XAxis, XYPlot, YAxis } from 'react-vis';
 
 const takeSize = 1000;
-
-const exampleData = [
-  { x: 1, y: 0, color: 10 },
-  { x: 1, y: 5, color: 10 },
-  { x: 1, y: 10, color: 6 },
-  { x: 1, y: 15, color: 7 },
-  { x: 2, y: 0, color: 12 },
-  { x: 2, y: 5, color: 2 },
-  { x: 2, y: 10, color: 1 },
-  { x: 2, y: 15, color: 12 },
-  { x: 3, y: 0, color: 9 },
-  { x: 3, y: 5, color: 2 },
-  { x: 3, y: 10, color: 6 },
-  { x: 3, y: 15, color: 12 }
-];
 
 type HeatmapPoint = { x: number, y: number, color: number };
 type HeatmapData = Array<HeatmapPoint>;
@@ -53,9 +38,28 @@ const Waterfall: FC<{ data: Array<number> }> = ({ data }) => {
     return toHeatmapData(protoData);
   }, [protoData])
 
+  const onClick = useCallback(async () => {
+    const context = await createAudioContext();
+    const { imag, real } = protoData[0];
+    const useReal = real.slice(0, 64);
+    const useImag = imag.slice(0, 64);
+    console.log({useReal, useImag});
+    const wave = context.createPeriodicWave(useReal, useImag, { disableNormalization: false });
+
+    const oscillator = context.createOscillator();
+    oscillator.setPeriodicWave(wave);
+    oscillator.connect(context.destination);
+    oscillator.start();
+
+    window.setTimeout(() => {
+      oscillator.stop();
+      oscillator.disconnect(context.destination);
+    }, 1000);
+  }, [protoData]);
+
   return (
     <div>
-      <XYPlot width={750} height={750}>
+      <XYPlot width={750} height={750} onClick={onClick}>
         <XAxis />
         <YAxis />
         <HeatmapSeries data={heatmapData} colorRange={['red', 'blue']} />
