@@ -18,6 +18,7 @@ export const createAudioContext = memo(async () => {
   await Promise.all([
     context.audioWorklet.addModule('/audio-processors/white-noise-processor.js'),
     context.audioWorklet.addModule('/audio-processors/simple-wave-processor.js'),
+    context.audioWorklet.addModule('/audio-processors/copy-buffer-processor.js'),
   ]);
 
   return context;
@@ -38,13 +39,26 @@ const triangle_: Wave = (radians) => Math.asin(Math.sin(radians));
 const triangle: Wave = (radians) => triangle_(radians) / (Math.PI / 2);
 const hex: Wave = (radians) => Math.min(1, Math.max(triangle_(radians), -1));
 
-export const createSimpleWaveNode = (context: AudioContext, wave: WaveName, frequencies:Array<number>, amplitude: number) => (
+export const createSimpleWaveNode = (context: AudioContext, wave: WaveName, frequencies: Array<number>, amplitude: number) => (
   new AudioWorkletNode(context, 'simple-wave-processor', { processorOptions: { wave, frequencies, amplitude } })
 );
 
 export const waves = { sin, square, sawtooth, triangle, hex };
 
 export type WaveName = keyof typeof waves;
+
+type BufferCopy = {
+  buffer: Array<number>;
+  channelIndex: number;
+  inputIndex: number;
+}
+export const createCopyBufferNode = (context: AudioContext, copyMode: 'all' | 'first' | 'none', onCopy: (copy: BufferCopy) => unknown) => {
+  const copyBufferNode = new AudioWorkletNode(context, 'copy-buffer-processor', { numberOfInputs: 1, numberOfOutputs: 1, processorOptions: { copyMode } });
+  copyBufferNode.port.onmessage = (msg) => {
+    onCopy(msg.data);
+  };
+  return copyBufferNode;
+};
 
 export const createTakeSampleNode = (context: AudioContext, take: (data: Array<number>) => unknown): ScriptProcessorNode => {
   const scriptNode = context.createScriptProcessor(bufferSize, 1, 1);

@@ -21,12 +21,14 @@ const WaveChart: FC<Props> = ({ waveName }) => {
   const waveData = useWaveData(waves[waveName]);
 
   const playWave = useCallback(async () => {
-    const audioContext = await createAudioContext();
-    const a = createSimpleWaveNode(audioContext, waveName, [440], 0.1);
+    const context = await createAudioContext();
+    const wave = createSimpleWaveNode(context, waveName, [440], 0.1);
 
-    a.connect(audioContext.destination);
+    wave.connect(context.destination);
 
-    window.setTimeout(() => { a.disconnect(audioContext.destination) }, 1000);
+    window.setTimeout(() => {
+      wave.disconnect(context.destination);
+    }, 1000);
   }, [waveName]);
 
   return (
