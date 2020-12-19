@@ -19,6 +19,7 @@ export const createAudioContext = memo(async () => {
     context.audioWorklet.addModule('/audio-processors/white-noise-processor.js'),
     context.audioWorklet.addModule('/audio-processors/simple-wave-processor.js'),
     context.audioWorklet.addModule('/audio-processors/copy-buffer-processor.js'),
+    context.audioWorklet.addModule('/audio-processors/play-buffer-processor.js'),
   ]);
 
   return context;
@@ -60,20 +61,10 @@ export const createCopyBufferNode = (context: AudioContext, copyMode: 'all' | 'f
   return copyBufferNode;
 };
 
-export const createPlayArrayNode = (context: AudioContext, data: Array<number>, onDone: () => unknown): ScriptProcessorNode => {
-  const copy = Array.from(data);
-  const scriptNode = context.createScriptProcessor(bufferSize, 0, 1);
-
-  scriptNode.onaudioprocess = ({ outputBuffer }: AudioProcessingEvent): void => {
-    if (copy.length === 0) { try { onDone(); } catch (e) { console.log('silenced', e); } }
-
-    const outputChannel = outputBuffer.getChannelData(0);
-    for (let i = 0; i < outputChannel.length; i++) {
-      outputChannel[i] = copy.shift() ?? 0;
-    }
-  };
-
-  return scriptNode;
+export const createPlayBufferNode = (context: AudioContext, buffer: Array<number>, onDone: () => unknown) => {
+  const playBufferNode = new AudioWorkletNode(context, 'play-buffer-processor', { processorOptions: { buffer } })
+  playBufferNode.port.onmessage = onDone;
+  return playBufferNode;
 };
 
 export const fooCurve: Array<number> = (() => {

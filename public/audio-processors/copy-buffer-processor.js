@@ -2,7 +2,7 @@ const bufferSize = 4096;
 
 class CopyBufferProcessor extends AudioWorkletProcessor {
   copyMode = 'all'; // 'all' | 'first' | 'none'
-  buffers = []; // channel -> buffer
+  buffers = {}; // input+channel -> buffer
 
   constructor(options) {
     super();
@@ -15,18 +15,19 @@ class CopyBufferProcessor extends AudioWorkletProcessor {
   }
 
   addToBuffer(inputIndex, channelIndex, channelData) {
-    const previousBuffer = this.buffers[channelIndex] ?? [];
-    const nextBuffer = [...previousBuffer, ...Array.from(channelData)];
+    const key = `${inputIndex}+${channelIndex}`;
+    const buffer = this.buffers[key] ?? [];
+    buffer.push(...Array.from(channelData));
 
-    if (nextBuffer.length >= bufferSize) {
-      this.port.postMessage({ buffer: nextBuffer, channelIndex, inputIndex });
-      this.buffers[channelIndex] = [];
+    if (buffer.length >= bufferSize) {
+      this.port.postMessage({ buffer: buffer, channelIndex, inputIndex });
+      this.buffers[key] = [];
 
       if (this.copyMode === 'first') {
         this.copyMode = 'none';
       }
     } else {
-      this.buffers[channelIndex] = nextBuffer;
+      this.buffers[key] = buffer;
     }
   }
 

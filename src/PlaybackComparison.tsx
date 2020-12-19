@@ -8,7 +8,7 @@ import {
   createBestagonStream,
   createCopyBufferNode,
   createMicStream,
-  createPlayArrayNode,
+  createPlayBufferNode,
   createSimpleWaveNode,
   FFTOutput,
 } from './audio';
@@ -81,7 +81,13 @@ const PlaybackComparison: FC = () => {
     const context = await createAudioContext();
     const takeInput = createCopyBufferNode(context, 'first', ({ buffer }) => setRecordingSample(buffer.slice(0, takeSize)));
     let playbackData: Array<number> = [];
-    const takeAllInput = createCopyBufferNode(context, 'all', ({ buffer }) => playbackData.push(...buffer));
+    const takeAllInput = createCopyBufferNode(context, 'all',
+      ({ buffer, channelIndex, inputIndex }) => {
+        if (inputIndex === 0 && channelIndex === 0) {
+          playbackData.push(...buffer);
+        }
+      },
+    );
 
     input.connect(takeInput);
     takeInput.connect(takeAllInput);
@@ -119,7 +125,7 @@ const PlaybackComparison: FC = () => {
   const onPlayback = useCallback(async () => {
     const context = await createAudioContext();
     const takeInput = createCopyBufferNode(context, 'first', ({ buffer }) => setPlaybackSample(buffer.slice(0, takeSize)));
-    const input = createPlayArrayNode(context, playbackBuffer, () => {
+    const input = createPlayBufferNode(context, playbackBuffer, () => {
       input.disconnect(takeInput);
       takeInput.disconnect(context.destination);
     });
