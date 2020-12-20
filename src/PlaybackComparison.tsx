@@ -1,7 +1,5 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 
-import { fft } from 'audio-fns';
-
 import {
   bufferWindows,
   createAudioContext,
@@ -10,6 +8,7 @@ import {
   createMicStream,
   createPlayBufferNode,
   createSimpleWaveNode,
+  fft,
   FFTOutput,
 } from './audio';
 import Series from './Series';
@@ -30,7 +29,7 @@ const Waterfall: FC<{ data: Array<number> }> = ({ data }) => {
   const protoData = useMemo(() => {
     const protoData: Array<FFTOutput> = [];
     Array.from(bufferWindows(data)).forEach((w) => {
-      protoData.push(fft(Float64Array.from(w)));
+      protoData.push(fft(w));
     });
     return protoData;
   }, [data]);
@@ -43,7 +42,7 @@ const Waterfall: FC<{ data: Array<number> }> = ({ data }) => {
     const { imag, real } = protoData[0];
     const useReal = real.slice(0, 64);
     const useImag = imag.slice(0, 64);
-    console.log({useReal, useImag});
+    console.log({ useReal, useImag });
     const wave = context.createPeriodicWave(useReal, useImag, { disableNormalization: false });
 
     const oscillator = context.createOscillator();

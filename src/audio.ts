@@ -1,3 +1,5 @@
+import { transform } from "./extern/fft";
+
 const AudioContext = window.AudioContext;
 
 const memo = <T extends unknown>(f: (() => T)): (() => T) => {
@@ -152,3 +154,10 @@ export function* bufferWindows(data: Array<number>): Generator<Array<number>, vo
 export const indexToFrequency = (context: AudioContext) => (i: number) => (i * (context.sampleRate / bufferSize / 2));
 
 export type FFTOutput = { imag: Float64Array, real: Float64Array };
+
+export const fft = (data: Array<number>): FFTOutput => {
+  const real = Float64Array.from(data);
+  const imag = new Float64Array(data.length);
+  transform(real, imag);
+  return { real, imag };
+}

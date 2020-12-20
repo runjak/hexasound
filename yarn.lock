@@ -2143,11 +2143,6 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-a-weighting@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/a-weighting/-/a-weighting-1.1.0.tgz#e90b5dbdab1513b74be9f051ce59d66adca8daaa"
-  integrity sha1-6QtdvasVE7dL6fBRzlnWatyo2qo=
-
 abab@^2.0.3:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.5.tgz#c0b678fb32d60fc1219c784d6a826fe385aeb79a"
@@ -2489,15 +2484,6 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-audio-fns@^0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/audio-fns/-/audio-fns-0.2.5.tgz#5a8bac0f24488d10f3e87c18a39c44cf2df2be09"
-  integrity sha512-WYD3VKjFNbTsFYNDv5oMgyneSKzVqcNbPGW59pjtDaKI5Fd+xL33PQWPGmPQ6oddH4fh5YNYKfg7Y5b0qv8ZlQ==
-  dependencies:
-    a-weighting "^1.1.0"
-    fftjs "^0.0.4"
-    interpolation-fns "^0.1.2"
-
 autoprefixer@^9.6.1:
   version "9.8.6"
   resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-9.8.6.tgz#3b73594ca1bf9266320c5acf1588d74dea74210f"
@@ -2574,11 +2560,6 @@ babel-loader@8.1.0:
     mkdirp "^0.5.3"
     pify "^4.0.1"
     schema-utils "^2.6.5"
-
-babel-plugin-add-module-exports@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/babel-plugin-add-module-exports/-/babel-plugin-add-module-exports-0.2.1.tgz#9ae9a1f4a8dc67f0cdec4f4aeda1e43a5ff65e25"
-  integrity sha1-mumh9KjcZ/DN7E9K7aHkOl/2XiU=
 
 babel-plugin-dynamic-import-node@^2.3.3:
   version "2.3.3"
@@ -5046,13 +5027,6 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
-fftjs@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/fftjs/-/fftjs-0.0.4.tgz#99f470bcf448f8b65b31dff71245aea4b32d39a0"
-  integrity sha1-mfRwvPRI+LZbMd/3EkWupLMtOaA=
-  dependencies:
-    babel-plugin-add-module-exports "^0.2.1"
-
 figgy-pudding@^3.5.1:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/figgy-pudding/-/figgy-pudding-3.5.2.tgz#b4eee8148abb01dcf1d1ac34367d59e12fa61d6e"
@@ -5924,11 +5898,6 @@ internal-slot@^1.0.2:
     es-abstract "^1.17.0-next.1"
     has "^1.0.3"
     side-channel "^1.0.2"
-
-interpolation-fns@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/interpolation-fns/-/interpolation-fns-0.1.2.tgz#1b3fcc4d318216530fba4d2fb968c6288cdd081f"
-  integrity sha512-by5VXgD+wn9A0qs4bZIkwxeMELmdvgVya0JHy22e2Zg2Q/vnYbKP9K4O0Jsa7dyrQTq4v2nfUhagsIby99TL8w==
 
 ip-regex@^2.1.0:
   version "2.1.0"
