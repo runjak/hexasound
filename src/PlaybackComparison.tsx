@@ -40,10 +40,7 @@ const Waterfall: FC<{ data: Array<number> }> = ({ data }) => {
   const onClick = useCallback(async () => {
     const context = await createAudioContext();
     const { imag, real } = protoData[0];
-    const useReal = real.slice(0, 64);
-    const useImag = imag.slice(0, 64);
-    console.log({ useReal, useImag });
-    const wave = context.createPeriodicWave(useReal, useImag, { disableNormalization: false });
+    const wave = context.createPeriodicWave(real, imag, { disableNormalization: false });
 
     const oscillator = context.createOscillator();
     oscillator.setPeriodicWave(wave);
