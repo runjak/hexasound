@@ -68,8 +68,8 @@ const QriExperiment: FC = () => {
     doPlay(input);
   }, [doPlay]);
 
-  const [q, setQ] = useState<number>(23);
-  const [stride, setStride] = useState<number>(42);
+  const [q, setQ] = useState<number>(42);
+  const [stride, setStride] = useState<number>(23);
 
   const onPlayback = useCallback(async () => {
     const context = await createAudioContext();
