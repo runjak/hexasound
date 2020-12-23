@@ -9,6 +9,7 @@ import FilterTest from './FilterTest';
 import BankComparison from './BankComparison';
 import PlaybackComparison from './PlaybackComparison';
 import NoiseChart from './NoiseChart';
+import QriExperiment from './QriExperiment';
 
 const App: FC = () => {
   return (
@@ -40,6 +41,8 @@ const App: FC = () => {
       <BestagonComparison />
       <h2>PlaybackComparison</h2>
       <PlaybackComparison />
+      <h2>QRI Experiment</h2>
+      <QriExperiment />
     </div>
   );
 }
