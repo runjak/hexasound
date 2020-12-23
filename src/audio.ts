@@ -151,7 +151,9 @@ export function* bufferWindows(data: Array<number>): Generator<Array<number>, vo
   }
 }
 
-export const indexToFrequency = (context: AudioContext) => (i: number) => (i * (context.sampleRate / bufferSize / 2));
+export const indexToFrequency = (context: AudioContext) => (i: number) => (i * (context.sampleRate / bufferSize));
+// For some reason it looks more correct when graphing without the `/2`.
+// export const indexToFrequency = (context: AudioContext) => (i: number) => (i * (context.sampleRate / bufferSize / 2));
 
 export type FFTOutput = { imag: Float64Array, real: Float64Array };
 

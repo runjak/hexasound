@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   bufferWindows,
@@ -10,36 +10,60 @@ import {
   createSimpleWaveNode,
   fft,
   FFTOutput,
+  indexToFrequency,
 } from './audio';
 import Series from './Series';
-import { HeatmapSeries, XAxis, XYPlot, YAxis } from 'react-vis';
+import { HeatmapSeries, HorizontalGridLines, LineMarkSeriesCanvas, VerticalGridLines, XAxis, XYPlot, YAxis } from 'react-vis';
 
 const takeSize = 1000;
 
 type HeatmapPoint = { x: number, y: number, color: number };
 type HeatmapData = Array<HeatmapPoint>;
 
-const toHeatmapData = (protoData: Array<FFTOutput>): HeatmapData => {
-  return protoData.flatMap((row: FFTOutput, y: number): HeatmapData => (
+const toHeatmapData = (fftOutputs: Array<FFTOutput>): HeatmapData => {
+  return fftOutputs.flatMap((row: FFTOutput, y: number): HeatmapData => (
     Array.from(row.real).slice(0, 500).map((color, x) => ({ x, y, color: Math.abs(color) })))
   );
 };
 
+const usePromise = <T extends unknown>(f: () => Promise<T>, dependencies: Array<unknown>): (null | T) => {
+  const [y, setY] = useState<null | T>(null);
+  useEffect(() => {
+    f().then(x => setY(x));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setY, ...dependencies]);
+
+  return y;
+};
+
 const Waterfall: FC<{ data: Array<number> }> = ({ data }) => {
-  const protoData = useMemo(() => {
-    const protoData: Array<FFTOutput> = [];
+  const fftOutputs = useMemo(() => {
+    const fftOutputs: Array<FFTOutput> = [];
     Array.from(bufferWindows(data)).forEach((w) => {
-      protoData.push(fft(w));
+      fftOutputs.push(fft(w));
     });
-    return protoData;
+    return fftOutputs;
   }, [data]);
   const heatmapData = useMemo(() => {
-    return toHeatmapData(protoData);
-  }, [protoData])
+    return toHeatmapData(fftOutputs);
+  }, [fftOutputs]);
+  const fooData = usePromise(async () => {
+    const context = await createAudioContext();
+    const toFrequency = indexToFrequency(context);
+    const fftOutput = fftOutputs[0] ?? { real: [], imag: [] };
+    const imag = fftOutput.imag.slice(0, 500);
+    const real = fftOutput.real.slice(0, 500);
+
+    const foo = [];
+    for (let i = 0; i < imag.length; i++) {
+      foo.push({ x: toFrequency(i), y: Math.sqrt(imag[i] ^ 2 + real[i] ^ 2) });
+    }
+    return foo;
+  }, [fftOutputs]);
 
   const onClick = useCallback(async () => {
     const context = await createAudioContext();
-    const { imag, real } = protoData[0];
+    const { imag, real } = fftOutputs[0];
     const wave = context.createPeriodicWave(real, imag, { disableNormalization: false });
 
     const oscillator = context.createOscillator();
@@ -51,7 +75,7 @@ const Waterfall: FC<{ data: Array<number> }> = ({ data }) => {
       oscillator.stop();
       oscillator.disconnect(context.destination);
     }, 1000);
-  }, [protoData]);
+  }, [fftOutputs]);
 
   return (
     <div>
@@ -59,6 +83,13 @@ const Waterfall: FC<{ data: Array<number> }> = ({ data }) => {
         <XAxis />
         <YAxis />
         <HeatmapSeries data={heatmapData} colorRange={['red', 'blue']} />
+      </XYPlot>
+      <XYPlot width={750} height={200}>
+        <HorizontalGridLines />
+        <VerticalGridLines />
+        <XAxis />
+        <YAxis />
+        <LineMarkSeriesCanvas data={fooData ?? []} />
       </XYPlot>
     </div>
   );
