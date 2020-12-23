@@ -163,3 +163,21 @@ export const fft = (data: Array<number>): FFTOutput => {
   transform(real, imag);
   return { real, imag };
 }
+
+export const qri = (data: Array<number>, qLevels: number, stride: number): Array<number> => {
+  const strideData = data.filter((_, i) => ((i % stride) === 0));
+  const quantizedStride = strideData.map(x => Math.round(x * qLevels) / qLevels);
+
+  const ret: Array<number> = [];
+  for (let i = 1; i < strideData.length; i++) {
+    const a = quantizedStride[i - 1];
+    const b = quantizedStride[i];
+    const m = (b - a) / stride;
+
+    for (let x = 0; x < stride; x++) {
+      ret.push(m * x + a);
+    }
+  }
+
+  return ret;
+};
