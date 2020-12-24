@@ -6,6 +6,7 @@ import {
   createCopyBufferNode,
   createMicStream,
   createPlayBufferNode,
+  createQriWaveNode,
   createSimpleWaveNode,
   qri,
 } from './audio';
@@ -83,6 +84,21 @@ const QriExperiment: FC = () => {
     takeInput.connect(context.destination);
   }, [playbackBuffer, q, stride]);
 
+  const onWorkletPlayback = useCallback(async () => {
+    const context = await createAudioContext();
+    const takeInput = createCopyBufferNode(context, 'first', ({ buffer }) => setPlaybackSample(buffer));
+    const qri = createQriWaveNode(context, q, stride);
+    const input = createPlayBufferNode(context, playbackBuffer, () => {
+      input.disconnect(qri);
+      qri.disconnect(takeInput);
+      takeInput.disconnect(context.destination);
+    });
+
+    input.connect(qri);
+    qri.connect(takeInput);
+    takeInput.connect(context.destination);
+  }, [playbackBuffer, q, stride]);
+
   return (
     <>
       <h3>Record buttons:</h3>
@@ -97,7 +113,8 @@ const QriExperiment: FC = () => {
       <h3>Playback:</h3>
       <input type="number" value={q} onChange={event => setQ(Number(event.target.value))} />
       <input type="number" value={stride} onChange={event => setStride(Number(event.target.value))} />
-      <button onClick={onPlayback}>Play</button>
+      <button onClick={onPlayback}>Qri Play</button>
+      <button onClick={onWorkletPlayback}>Worklet Play</button>
       <Series height={200} width={900} data={playbackSample} />
     </>
   );
