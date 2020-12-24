@@ -21,7 +21,6 @@ export const createAudioContext = memo(async () => {
     context.audioWorklet.addModule('/audio-processors/white-noise-processor.js'),
     context.audioWorklet.addModule('/audio-processors/simple-wave-processor.js'),
     context.audioWorklet.addModule('/audio-processors/copy-buffer-processor.js'),
-    context.audioWorklet.addModule('/audio-processors/qri-wave-processor.js'),
   ]);
 
   return context;
@@ -182,7 +181,3 @@ export const qri = (data: Array<number>, q: number, stride: number): Array<numbe
 
   return ret;
 };
-
-export const createQriWaveNode = (context: AudioContext, q: number, stride: number): AudioWorkletNode => (
-  new AudioWorkletNode(context, 'qri-wave-processor', { processorOptions: { q, stride } })
-);
