@@ -10,6 +10,7 @@ import BankComparison from './BankComparison';
 import PlaybackComparison from './PlaybackComparison';
 import NoiseChart from './NoiseChart';
 import QriExperiment from './QriExperiment';
+import Thing from './Thing';
 
 const App: FC = () => {
   return (
@@ -37,12 +38,14 @@ const App: FC = () => {
       <h2>BankComparison D294 + A440</h2>
       <BankComparison frequencies={[294, 440]} bankFrequencies={[294, 440]} Q={1} />
       <h2>bestagons.wav</h2>
-      <audio controls src="./bestagons.wav" id="bestagons" />
+      <audio controls src="./bestagons.long.wav" id="bestagons" />
       <BestagonComparison />
       <h2>PlaybackComparison</h2>
       <PlaybackComparison />
       <h2>QRI Experiment</h2>
       <QriExperiment />
+      <h2>Thing</h2>
+      <Thing />
     </div>
   );
 }

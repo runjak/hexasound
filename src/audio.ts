@@ -64,10 +64,7 @@ export const createCopyBufferNode = (context: AudioContext, copyMode: 'all' | 'f
 
 export const createPlayBufferNode = (context: AudioContext, buffer: Array<number>, onDone: () => unknown) => {
   const audioBuffer = context.createBuffer(1, buffer.length, context.sampleRate);
-  const channel = audioBuffer.getChannelData(0);
-  for (let i = 0; i < buffer.length; i++) {
-    channel[i] = buffer[i];
-  }
+  audioBuffer.copyToChannel(Float32Array.from(buffer), 0);
 
   const source = context.createBufferSource();
   source.buffer = audioBuffer;
@@ -179,5 +176,12 @@ export const qri = (data: Array<number>, q: number, stride: number): Array<numbe
     }
   }
 
+  return ret;
+};
+
+export const trim = (data: Array<number>): Array<number> => {
+  const ret = data.slice();
+  while (ret.length > 0 && ret[0] === 0) { ret.shift(); }
+  while (ret.length > 0 && ret[ret.length - 1] === 0) { ret.pop(); }
   return ret;
 };
